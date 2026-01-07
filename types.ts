@@ -23,6 +23,7 @@ export interface BuyOption {
   marketplace: string;
   label: string;
   url: string;
+  logo_url?: string;
   prioridade: number;
 }
 

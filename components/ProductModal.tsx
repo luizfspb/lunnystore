@@ -9,7 +9,7 @@ interface ProductModalProps {
 }
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
-  const [selectedMedia, setSelectedMedia] = useState<string>(product.capa_url);
+  const [selectedMedia, setSelectedMedia] = useState<string | null>(product.capa_url || null);
   const [isMediaVideo, setIsMediaVideo] = useState(false);
   const [videoType, setVideoType] = useState<VideoType | null>(null);
 
@@ -55,14 +55,14 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
 
         <div className="md:w-3/5 bg-gray-50 flex flex-col p-4 md:p-6 overflow-y-auto">
           <div className="relative rounded-xl overflow-hidden mb-4 shadow-sm bg-white min-h-[300px] flex items-center justify-center">
-            {isMediaVideo ? renderVideoEmbed(selectedMedia, videoType!) : (
-              <img src={selectedMedia} alt={product.titulo} className="w-full h-full object-contain max-h-[500px]" />
+            {isMediaVideo ? (selectedMedia ? renderVideoEmbed(selectedMedia, videoType!) : <div className="text-sm text-gray-400">Vídeo inválido</div>) : (
+              selectedMedia ? <img src={selectedMedia} alt={product.titulo} className="w-full h-full object-contain max-h-[500px]" /> : <div className="text-sm text-gray-400">Sem imagem</div>
             )}
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2">
             {allMedia.map((media, idx) => (
-              <button key={idx} onClick={() => { setSelectedMedia(media.url); setIsMediaVideo(media.type === 'video'); setVideoType(media.videoType || null); }} className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${selectedMedia === media.url ? 'border-indigo-600 scale-105 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'}`}>
-                {media.type === 'image' ? <img src={media.url} alt={media.alt} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gray-800 flex items-center justify-center"><svg className="text-white w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>}
+              <button key={idx} onClick={() => { setSelectedMedia(media.url || null); setIsMediaVideo(media.type === 'video'); setVideoType(media.videoType || null); }} className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${selectedMedia === media.url ? 'border-indigo-600 scale-105 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'}`}>
+                {media.type === 'image' ? (media.url ? <img src={media.url} alt={media.alt} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gray-100 flex items-center justify-center text-xs text-gray-400">sem imagem</div>) : <div className="w-full h-full bg-gray-800 flex items-center justify-center"><svg className="text-white w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>}
               </button>
             ))}
           </div>
@@ -81,7 +81,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
               {(product.onde_comprar || []).sort((a, b) => a.prioridade - b.prioridade).map((option) => (
                 <button key={option.id} onClick={() => handleBuyClick(option.marketplace, option.url)} className="flex items-center justify-between w-full p-4 rounded-xl border-2 border-gray-100 hover:border-indigo-600 hover:bg-indigo-50/30 transition-all">
                   <div className="flex items-center gap-3">
-                    <span className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center font-bold text-xs text-gray-600">{option.marketplace.substring(0, 2).toUpperCase()}</span>
+                    {option.logo_url ? (
+                      <img src={option.logo_url} alt={option.marketplace} className="w-10 h-10 bg-white rounded-lg object-contain p-1" />
+                    ) : (
+                      <span className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center font-bold text-xs text-gray-600">{option.marketplace.substring(0, 2).toUpperCase()}</span>
+                    )}
                     <div className="text-left">
                       <div className="text-sm font-bold text-gray-900">{option.label}</div>
                       <div className="text-[10px] text-gray-400 uppercase font-semibold">{option.marketplace}</div>

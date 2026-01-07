@@ -161,9 +161,13 @@ export const uploadImage = async (file: File): Promise<string> => {
   if (!isSupabaseConfigured) return URL.createObjectURL(file);
   
   try {
-    const fileName = `${Date.now()}-${file.name}`;
-    const { error } = await supabase.storage.from('products').upload(`images/${fileName}`, file);
-    if (error) return handleError(error);
+    // sanitize filename to avoid spaces and problematic chars
+    const safeName = file.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9._-]/g, '');
+    const fileName = `${Date.now()}-${safeName}`;
+
+    const { data: uploadData, error: uploadError } = await supabase.storage.from('products').upload(`images/${fileName}`, file);
+    if (uploadError) return handleError(uploadError);
+
     const { data } = supabase.storage.from('products').getPublicUrl(`images/${fileName}`);
     return data.publicUrl;
   } catch (err) {

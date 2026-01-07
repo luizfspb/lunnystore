@@ -64,6 +64,7 @@ const ProductEditor: React.FC = () => {
       marketplace: 'Shopee',
       label: 'Comprar na Shopee',
       url: '',
+      logo_url: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/Shopee_logo.svg',
       prioridade: (formData.onde_comprar?.length || 0) + 1
     };
     setFormData((prev: any) => ({ ...prev, onde_comprar: [...(prev.onde_comprar || []), newOption] }));
@@ -170,6 +171,11 @@ const ProductEditor: React.FC = () => {
                 <input type="text" placeholder="URL" value={opt.url} onChange={e => {
                   const copy = [...formData.onde_comprar];
                   copy[idx].url = e.target.value;
+                  setFormData({...formData, onde_comprar: copy});
+                }} className="p-2 rounded bg-white text-sm" />
+                <input type="text" placeholder="Logo URL (opcional)" value={opt.logo_url || ''} onChange={e => {
+                  const copy = [...formData.onde_comprar];
+                  copy[idx].logo_url = e.target.value;
                   setFormData({...formData, onde_comprar: copy});
                 }} className="p-2 rounded bg-white text-sm" />
               </div>
