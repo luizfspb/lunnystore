@@ -1,0 +1,8 @@
+
+{
+  "name": "LunnyStore - Vitrine de Afiliados",
+  "description": "Uma vitrine de produtos elegante e rápida com área administrativa para gestão de catálogo, tracking de cliques e integração com marketplaces.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
